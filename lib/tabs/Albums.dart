@@ -1,3 +1,4 @@
+import 'package:c_music/MusicPlayer/MusicPlayer.dart';
 import 'package:flutter/cupertino.dart';
 
 class Albums extends StatelessWidget {
@@ -5,6 +6,6 @@ class Albums extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Albums");
+    return  MusicPlayer.myQueue;
   }
 }

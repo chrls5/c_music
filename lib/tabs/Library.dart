@@ -77,17 +77,8 @@ class _LibraryState extends State<Library> {
 
         }
         return Center(
-          child: ReorderableListView(
-            onReorder: (int oldIndex, int newIndex) {
-              setState(() {
-                if (oldIndex < newIndex) {
-                  newIndex -= 1;
-                }
-                final Widget item = children.removeAt(oldIndex);
-                children.insert(newIndex, item);
-                log(children.toString());
-              });
-            },
+          child: ListView(
+
             children: children,
           ),
         );

@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'package:c_music/MusicPlayer/PlayingQueueModel.dart';
+import 'package:provider/provider.dart';
 
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/animation.dart';
@@ -31,12 +33,17 @@ class MyApp extends StatelessWidget {
   final bool _isDark = true;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'C_Music',
-      darkTheme: _dark,
-      theme: _light,
-      themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
-      home: MyHomePage(title: 'C_Music'),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PlayingQueueModel>(create: (context)=>PlayingQueueModel())
+      ],
+      child:MaterialApp(
+        title: 'C_Music',
+        darkTheme: _dark,
+        theme: _light,
+        themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
+        home: MyHomePage(title: 'C_Music'),
+      )
     );
   }
 }

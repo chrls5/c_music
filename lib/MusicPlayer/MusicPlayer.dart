@@ -2,9 +2,12 @@
 import 'dart:developer';
 
 import 'package:audio_session/audio_session.dart';
+import 'package:c_music/MusicPlayer/PlayingQueueModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
+import 'PlayingQueueScreen.dart';
 import 'common.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -15,6 +18,14 @@ class MusicPlayer extends StatefulWidget {
   MusicPlayer( {Key? key}) : super(key: key);
 
   static final  AudioPlayer player = AudioPlayer();
+  static final PlayingQueue myQueue = PlayingQueue();
+  static  ConcatenatingAudioSource queueSource = ConcatenatingAudioSource(
+    // Start loading next item just before reaching it.
+      useLazyPreparation: true, // default
+      // Customise the shuffle algorithm.
+      shuffleOrder: DefaultShuffleOrder(), // default
+       children: []);
+
 
   @override
   _MusicPlayerState createState() => _MusicPlayerState();
@@ -23,7 +34,6 @@ class MusicPlayer extends StatefulWidget {
 class _MusicPlayerState extends State<MusicPlayer> {
 
   static final  _player = MusicPlayer.player;
-
   @override
   void initState() {
     super.initState();
@@ -39,7 +49,18 @@ class _MusicPlayerState extends State<MusicPlayer> {
     final session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration.speech());
     // Listen to errors during playback.
-    _player.playbackEventStream.listen((event) {},
+
+
+
+    _player.playbackEventStream.listen((event) {
+
+      log("hi somethign went **********" + event.currentIndex.toString());
+      int currInd = -1;
+      if(event.currentIndex!=null)
+        currInd =event.currentIndex!;
+      Provider.of<PlayingQueueModel>(context, listen: false).setCurrIndex(currInd);
+
+    },
         onError: (Object e, StackTrace stackTrace) {
           print('A stream error occurred: $e');
         });

@@ -20,7 +20,7 @@ class BottomBar extends StatelessWidget {
               RoundedRectangleBorder(), StadiumBorder(side: BorderSide())),
           expandedBackColor: Theme.of(context).bottomAppBarColor,
           expandedBody: Center(
-            child: expandedMusicPlayer//Text("Queue"),
+            child:Text("Queue")// MusicPlayer.myQueue,//expandedMusicPlayer//
           ),
           bottomAppBarBody: Container(
                 color: Colors.black54,
@@ -47,14 +47,11 @@ class _MyFloatingButtonState extends State<MyFloatingButton>{
   @override
   Widget build(BuildContext context) {
     return  GestureDetector(
-      onVerticalDragUpdate: (dragUpdateDetails){
-        DefaultBottomBarController.of(context).onDrag(dragUpdateDetails);
-      },
+      onVerticalDragUpdate:      DefaultBottomBarController.of(context).onDrag,
 
-      onVerticalDragEnd: (dragUpdateDetails){
-        DefaultBottomBarController.of(context).onDragEnd(dragUpdateDetails);
-        log("hahaha");
-      },
+
+      onVerticalDragEnd:         DefaultBottomBarController.of(context).onDragEnd,
+
 
       //DefaultBottomBarController.of(context).onDragEnd,
       child:  widget.myBottomBar,

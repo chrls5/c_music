@@ -6,58 +6,51 @@ import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:just_audio/just_audio.dart';
 
 import 'MusicPlayer.dart';
+import 'PlayingQueueModel.dart';
+import 'package:provider/provider.dart';
 
-class SongListTileReorderable extends StatefulWidget {
-  SongListTileReorderable(this.songInfo,this.songsToPlay, {Key? key}) : super(key: key);
+class SongListTileReorderable extends StatelessWidget {
+  var songsToPlay;
 
-  final SongInfo songInfo;
-  final List<SongInfo> songsToPlay;
+  var songInfo;
 
-  @override
-  _SongListTileReorderableState createState() => _SongListTileReorderableState();
-}
-
-class _SongListTileReorderableState extends State<SongListTileReorderable> {
+  SongListTileReorderable(this.songInfo,this.songsToPlay,  {Key? key}) : super(key: key);
 
   final FlutterAudioQuery audioQuery = FlutterAudioQuery();
   static final  player = MusicPlayer.player;
-
-
+  
+  
   @override
   Widget build(BuildContext context) {
+    int currInd = context.read<PlayingQueueModel>().currIndexPlaying;
+    //List<SongInfo> songsInQueue = context.read<PlayingQueueModel>().songsInQueue;
+
+    bool isCurrent =currInd==songsToPlay.indexOf(songInfo);
+  log("from inside: " + currInd.toString());
+
     return ListTile(
         leading: Container(
-          child: widget.songInfo.albumArtwork !=null? Image.file(
-            File(widget.songInfo.albumArtwork),
+          child: songInfo.albumArtwork !=null? Image.file(
+            File(songInfo.albumArtwork),
           )  : Icon(Icons.album_outlined),
           height: 50,
         ),
-        title: Text(widget.songInfo.title),
-        subtitle: Text(widget.songInfo.artist),
-        trailing: Icon(Icons.more_vert),
+        title: isCurrent? Text(songInfo.title,  style:  TextStyle(color: Colors.red),): Text(songInfo.title),
+        subtitle: isCurrent? Text(songInfo.artist,  style:  TextStyle(color: Colors.red),): Text(songInfo.title),
+        trailing: ReorderableDragStartListener(
+          index: songsToPlay.indexOf(songInfo),
+          child: const Icon(Icons.drag_handle),
+        ),
+        //Icon(Icons.more_vert),
       onTap: ()  {
-       //   player.setFilePath(widget.songInfo.filePath);
-        //  player.setAudioSource(AudioSource.uri(Uri(path: widget.songInfo.filePath)));
-          player.setAudioSource(
-            ConcatenatingAudioSource(
-              // Start loading next item just before reaching it.
-              useLazyPreparation: true, // default
-              // Customise the shuffle algorithm.
-              shuffleOrder: DefaultShuffleOrder(), // default
-              // Specify the items in the playlist.
-              children: widget.songsToPlay.map((song)=> AudioSource.uri(Uri.parse(song.filePath))).toList(),
 
-            ),
-            // Playback will be prepared to start from track1.mp3
-            initialIndex: widget.songsToPlay.indexOf(widget.songInfo), // default
-            // Playback will be prepared to start from position zero.
-            initialPosition: Duration.zero, // default
-          );
-
-
-          player.play();
+          //TODO Since we are in Queue we dont need to replace current Queue
+        // just play the indexed-tapped song
+        //Also set as current
+         // player.play();
   },
       contentPadding: EdgeInsets.symmetric(horizontal: 20),
     );
   }
 }
+
