@@ -5,7 +5,9 @@ import 'dart:developer';
 import 'package:c_music/MusicPlayer/MusicPlayer.dart';
 import 'package:c_music/MusicPlayer/PlayingQueueModel.dart';
 import 'package:c_music/MusicPlayer/SongListTileOrderable.dart';
+import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -24,25 +26,29 @@ class _PlayingQueueState extends State<PlayingQueue> with AutomaticKeepAliveClie
   Widget build(BuildContext context) {
     // Consumer<PlayingQueueModel>(
     // )
-    List<SongInfo> songsInQueue = context.read<PlayingQueueModel>().songsInQueue;
+    List<SongInfo> songsInQueue = context.watch<PlayingQueueModel>().songsInQueue;
     int sizeQ = songsInQueue.length;
 
     children = songsInQueue.map((song) => SongListTileReorderable(song, songsInQueue, key: Key(song.id),)).toList();
 
-    return sizeQ == 0 ? Text("Empty Queue") : ReorderableListView(
+    return sizeQ == 0 ? Text("Empty Queue") :
+
+    ReorderableListView(
       onReorder: (int oldIndex, int newIndex) {
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
-          Provider.of<PlayingQueueModel>(context, listen: false).reorderPlayingQueue(oldIndex, newIndex);
+        if (oldIndex < newIndex) {
+          newIndex -= 1;
+        }
+        Provider.of<PlayingQueueModel>(context, listen: false).reorderPlayingQueue(oldIndex, newIndex);
       },
       buildDefaultDragHandles: true,
-
       children: children,
-    );
+      padding: EdgeInsets.all(15),
+
+    )
+    ;
+
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

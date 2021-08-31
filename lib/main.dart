@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:c_music/MusicPlayer/PlayingQueueModel.dart';
+import 'package:c_music/tabs/Library.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
@@ -42,16 +44,14 @@ class MyApp extends StatelessWidget {
         darkTheme: _dark,
         theme: _light,
         themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
-        home: MyHomePage(title: 'C_Music'),
+        home: MyHomePage(),
       )
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -59,6 +59,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String currTabTitle = tabsNames[0];
+@override
+  void initState()  {
+    // TODO: implement initState
+    super.initState();
+//  getPermissions();  //AUDIO QUERY DOES THIS!
+
+}
+
+
+ Future<void> getPermissions() async {
+   Map<Permission, PermissionStatus> statuses = await [
+   Permission.location,
+       Permission.storage,
+     Permission.manageExternalStorage,
+   ].request();
+   print( statuses[Permission.location] );
+   print( statuses[Permission.storage] );
+   print( statuses[Permission.manageExternalStorage] );
+
+ }
 
   @override
   Widget build(BuildContext context) {
@@ -78,12 +98,63 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         });
         return Scaffold(
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             title: Text(currTabTitle),
             bottom: const TabBar(
               tabs: tabs,
             ),
           ),
+
+          //////TO DELETE? /////
+
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: GestureDetector(
+            //
+            // Set onVerticalDrag event to drag handlers of controller for swipe effect
+            onVerticalDragUpdate: DefaultBottomBarController.of(context).onDrag,
+            onVerticalDragEnd: DefaultBottomBarController.of(context).onDragEnd,
+            child: FloatingActionButton.extended(
+              label: AnimatedBuilder(
+                animation: DefaultBottomBarController.of(context).state,
+                builder: (context, child) => Row(
+                  children: [
+                    Text(
+                      "Queue"
+                    ),
+                    const SizedBox(width: 4.0),
+                    AnimatedBuilder(
+                      animation: DefaultBottomBarController.of(context).state,
+                      builder: (context, child) => Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.diagonal3Values(
+                          1,
+                          DefaultBottomBarController.of(context).state.value * 2 - 1,
+                          1,
+                        ),
+                        child: child,
+                      ),
+                      child: RotatedBox(
+                        quarterTurns: 1,
+                        child: Icon(
+                          Icons.chevron_right,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              elevation: 2,
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              //
+              //Set onPressed event to swap state of bottom bar
+              onPressed: () => DefaultBottomBarController.of(context).swap(),
+            ),
+          ),
+          //// END OF DELETE ///
+
           // Actual expandable bottom bar
           bottomNavigationBar: MyFloatingButton(),
           body: TabBarView(

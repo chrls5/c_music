@@ -7,6 +7,7 @@ import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:just_audio/just_audio.dart';
 
 import 'MusicPlayer.dart';
+import 'PlayingQueueScreen.dart';
 
 class MusicPlayerExpanded extends StatefulWidget {
   MusicPlayerExpanded( {Key? key}) : super(key: key);
@@ -21,6 +22,6 @@ class _MusicPlayerExpandedState extends State<MusicPlayerExpanded> {
 
   @override
   Widget build(BuildContext context) {
-    return  MusicPlayer.myQueue;//MusicPlayer();
+    return  PlayingQueue();
   }
 }

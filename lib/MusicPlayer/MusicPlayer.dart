@@ -18,7 +18,7 @@ class MusicPlayer extends StatefulWidget {
   MusicPlayer( {Key? key}) : super(key: key);
 
   static final  AudioPlayer player = AudioPlayer();
-  static final PlayingQueue myQueue = PlayingQueue();
+  //static final PlayingQueue myQueue = PlayingQueue();
   static  ConcatenatingAudioSource queueSource = ConcatenatingAudioSource(
     // Start loading next item just before reaching it.
       useLazyPreparation: true, // default
@@ -37,6 +37,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
   @override
   void initState() {
     super.initState();
+    _player.setSpeed(1);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.black,
     ));
