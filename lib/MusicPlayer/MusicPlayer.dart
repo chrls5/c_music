@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
-import 'PlayingQueueScreen.dart';
 import 'common.dart';
 import 'package:rxdart/rxdart.dart';
 

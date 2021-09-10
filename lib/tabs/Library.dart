@@ -1,17 +1,19 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:c_music/MusicPlayer/MusicPlayer.dart';
 import 'package:c_music/MusicPlayer/SongListTile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 
 class Library extends StatefulWidget {
   const Library({Key? key}) : super(key: key);
+
   @override
-  State<Library> createState() => _LibraryState(songDragController: ScrollController());
+  State<Library> createState() => _LibraryState();
 }
 
 final FlutterAudioQuery audioQuery = FlutterAudioQuery();
@@ -19,12 +21,11 @@ final FlutterAudioQuery audioQuery = FlutterAudioQuery();
 class _LibraryState extends State<Library>  with AutomaticKeepAliveClientMixin {
   late List<SongInfo> songs;
    List<Widget> children =[];
-  bool getSongsFromFile = true;
-  final ScrollController songDragController ;
+  bool getSongsFromStorage = true;
+   late SharedPreferences prefs ;
 
-   _LibraryState({
-    required this.songDragController,
-  });
+  final ScrollController songDragController = ScrollController();
+
 
   Future<String> _getFiles() async {
     try {
@@ -33,28 +34,49 @@ class _LibraryState extends State<Library>  with AutomaticKeepAliveClientMixin {
       print(e.toString());
     }
 
-    children = songs.map((song) => SongListTile(song, songs, key: Key(song.id),)).toList();
+    prefs.setString("allSongsInfos", jsonEncode(songs));
+
     return songs.toString();
+  }
+
+  Future<String> _initializePerfs() async {
+     prefs = await SharedPreferences.getInstance();
+     String? songsFromPref = prefs.getString("allSongsInfos");
+
+     getSongsFromStorage = songsFromPref==null ? true : false;
+     if(!getSongsFromStorage){
+        log("I WONT GET FILES FROM STORAGE THIS TIME! !! ! ! ! ! ! ");
+        Iterable jsonSongs = jsonDecode(songsFromPref!);
+        //TODO check if new songs are added to local storage!
+        songs = List<SongInfo>.from(jsonSongs.map((model)=> SongInfo.fromJson(model)));
+     }else
+       {
+         log("GETTING FILES FROM STORAGE :( ");
+         await _getFiles();
+       }
+     children = songs.map((song) => SongListTile(song, songs, key: Key(song.id),)).toList();
+     log("SONGS: " + songs.length.toString() + "\n\n"  + songs.toString()+ "\n\n" );
+
+     return songs.toString();
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-   // _getFiles();
-
+    //_initializePerfs();
   }
 
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
-      future: getSongsFromFile? _getFiles():null, // a previously-obtained Future<String> or null
+      future: getSongsFromStorage? _initializePerfs():null, // a previously-obtained Future<String> or null
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
       //  List<Widget> children;
         if (snapshot.hasData ) {
-          getSongsFromFile = false;
+          getSongsFromStorage = false;
+
          // children = songs.map((song) => SongListTile(song, songs, key: Key(song.id),)).toList();
         } else if (snapshot.hasError) {
-
           return Center(child:Column(children: [
             const Icon(
               Icons.error_outline,
@@ -66,9 +88,7 @@ class _LibraryState extends State<Library>  with AutomaticKeepAliveClientMixin {
               child: Text('Error: ${snapshot.error}'),
             )
           ],));
-
         } else {
-
           return Center(child:Column(children: [
             SizedBox(
               child: CircularProgressIndicator(),
@@ -80,18 +100,10 @@ class _LibraryState extends State<Library>  with AutomaticKeepAliveClientMixin {
               child: Text('Loading library...'),
             )
           ],));
-
         }
 
-        // return Center(
-        //   child: DraggableScrollbar.arrows(controller: songDragController ,
-        //   child:ListView(
-        //   controller: songDragController,
-        //     children: children,
-        //   ),
-        //   ),
-        // );
 return DraggableScrollbar.arrows(
+  padding: EdgeInsets.zero,
   controller: songDragController,
   labelTextBuilder: (double offset) => Text("${offset ~/ 65}", style: TextStyle(color: Colors.black),),
   child: ListView.builder(
@@ -106,6 +118,8 @@ return DraggableScrollbar.arrows(
 
       },
     );
+
+
   }
 
   @override

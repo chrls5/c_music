@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:c_music/MusicPlayer/MusicPlayer.dart';
 import 'package:c_music/MusicPlayer/PlayingQueueModel.dart';
 import 'package:c_music/MusicPlayer/SongListTileOrderable.dart';
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -24,28 +25,44 @@ class _PlayingQueueState extends State<PlayingQueue> with AutomaticKeepAliveClie
   late List<Widget> children;
 
   Widget build(BuildContext context) {
-    // Consumer<PlayingQueueModel>(
-    // )
     List<SongInfo> songsInQueue = context.watch<PlayingQueueModel>().songsInQueue;
     int sizeQ = songsInQueue.length;
 
-    children = songsInQueue.map((song) => SongListTileReorderable(song, songsInQueue, key: Key(song.id),)).toList();
+     ScrollController myCntroler = context.read<PlayingQueueModel>().queueScrollCntrl;
+    int currInd = context.read<PlayingQueueModel>().currIndexPlaying;
+    log("something changed?");
+    children = songsInQueue.map((song) => SongListTileReorderable(song, songsInQueue.indexOf(song)==currInd, key: Key(song.id),)).toList();
 
     return sizeQ == 0 ? Text("Empty Queue") :
 
-    ReorderableListView(
-      onReorder: (int oldIndex, int newIndex) {
-        if (oldIndex < newIndex) {
-          newIndex -= 1;
-        }
-        Provider.of<PlayingQueueModel>(context, listen: false).reorderPlayingQueue(oldIndex, newIndex);
-      },
-      buildDefaultDragHandles: true,
-      children: children,
-      padding: EdgeInsets.all(15),
+    ReorderableListView.builder(
+      scrollController: myCntroler,
+      itemCount: children.length,
+      itemExtent: 70,
+      itemBuilder: (context, index) {
+        return children[index];
+      },  onReorder: (int oldIndex, int newIndex) {
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+      Provider.of<PlayingQueueModel>(context, listen: false).reorderPlayingQueue(oldIndex, newIndex);
+    },
+    );
 
-    )
-    ;
+    // ReorderableListView(
+    //   onReorder: (int oldIndex, int newIndex) {
+    //     if (oldIndex < newIndex) {
+    //       newIndex -= 1;
+    //     }
+    //     Provider.of<PlayingQueueModel>(context, listen: false).reorderPlayingQueue(oldIndex, newIndex);
+    //   },
+    //   scrollController:myCntroler,//queueScrollCntrl,//ScrollController(initialScrollOffset: (70.0 * currInd))   ,
+    //   buildDefaultDragHandles: true,
+    //   children: children,
+    //   padding: EdgeInsets.all(15),
+    //
+    // )
+    // ;
 
   }
 

@@ -19,7 +19,7 @@ class BottomBar extends StatelessWidget {
           shape: AutomaticNotchedShape(
               RoundedRectangleBorder(side: BorderSide(width: 16.0, color: Colors.lightBlue.shade50),), StadiumBorder(side: BorderSide(color: Colors.red, width: 23))),
           expandedBackColor: Colors.grey[850],//Theme.of(context).bottomAppBarColor,
-          expandedBody: Center(child:expandedMusicPlayer),// PlayingQueue(),//Center(child:MusicPlayer.myQueue),
+          expandedBody: Container(child: Center(child:expandedMusicPlayer),padding: EdgeInsets.only(bottom: 150+10,left:10,right:10, top:10 ),),// PlayingQueue(),//Center(child:MusicPlayer.myQueue),
           bottomAppBarBody: Container(
                 color: Colors.black,
                 padding: const EdgeInsets.all(8.0),

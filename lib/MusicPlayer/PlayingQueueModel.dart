@@ -13,12 +13,16 @@ class PlayingQueueModel extends ChangeNotifier{
 
    List<SongInfo> songsInQueue = [];
     int currIndexPlaying = -1;
+ScrollController queueScrollCntrl = ScrollController(initialScrollOffset: (70.0 * (MusicPlayer.player.currentIndex ??0.0) ), );
 
   AudioPlayer player = MusicPlayer.player;
 
   void setQueue(List<SongInfo> songsToQueue, SongInfo songToPlay){
      songsInQueue = songsToQueue;
-     setAudioSourceQueue(songsToQueue, songToPlay);
+     int newInd = songsToQueue.indexOf(songToPlay);
+
+     setAudioSourceQueue(songsToQueue, newInd);
+     queueScrollCntrl.jumpTo(70.0 * newInd - 3*70);
      notifyListeners();
   }
 
@@ -28,10 +32,6 @@ class PlayingQueueModel extends ChangeNotifier{
   }
 
   void reorderPlayingQueue(int oldIndex, int newIndex){
-    // if (oldIndex < newIndex) {
-    //   newIndex -= 1;
-    // }
-
 
     MusicPlayer.queueSource.move(oldIndex, newIndex);
     final SongInfo item = songsInQueue.removeAt(oldIndex);
@@ -39,7 +39,7 @@ class PlayingQueueModel extends ChangeNotifier{
     notifyListeners();
 
   }
-  void setAudioSourceQueue(List<SongInfo> songsToQueue, SongInfo songToPlay){
+  void setAudioSourceQueue(List<SongInfo> songsToQueue, int newInd){
     MusicPlayer.queueSource = ConcatenatingAudioSource(
       // Start loading next item just before reaching it.
       useLazyPreparation: true, // default
@@ -50,15 +50,31 @@ class PlayingQueueModel extends ChangeNotifier{
 
     );
 
+
+
     player.setAudioSource(
       MusicPlayer.queueSource,
       // Playback will be prepared to start from track1.mp3
-      initialIndex: songsToQueue.indexOf(songToPlay), // default
+      initialIndex:newInd, // default
       // Playback will be prepared to start from position zero.
       initialPosition: Duration.zero, // default
     );
 
     player.play();
+  }
+
+  void playIndexInQueue(SongInfo songToPlay){
+    int newInd  = songsInQueue.indexOf(songToPlay);
+    if(newInd ==-1)
+      return;
+
+    player.setAudioSource(
+      MusicPlayer.queueSource,
+      initialIndex:newInd, //only this changes!
+      initialPosition: Duration.zero,
+    );
+
+        MusicPlayer.player.play();
   }
 
 

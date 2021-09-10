@@ -10,11 +10,11 @@ import 'PlayingQueueModel.dart';
 import 'package:provider/provider.dart';
 
 class SongListTileReorderable extends StatelessWidget {
-  var songsToPlay;
+  bool isCurrent;
 
   var songInfo;
 
-  SongListTileReorderable(this.songInfo,this.songsToPlay,  {Key? key}) : super(key: key);
+  SongListTileReorderable(this.songInfo,this.isCurrent,  {Key? key}) : super(key: key);
 
   final FlutterAudioQuery audioQuery = FlutterAudioQuery();
   static final  player = MusicPlayer.player;
@@ -22,11 +22,10 @@ class SongListTileReorderable extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    int currInd = context.read<PlayingQueueModel>().currIndexPlaying;
-    //List<SongInfo> songsInQueue = context.read<PlayingQueueModel>().songsInQueue;
+    List<SongInfo> songsInQueue = context.read<PlayingQueueModel>().songsInQueue;
 
-    bool isCurrent =currInd==songsToPlay.indexOf(songInfo);
-  log("from inside: " + currInd.toString());
+    //bool isCurrent =currInd==songsToPlay.indexOf(songInfo);
+  log("from inside: " + isCurrent.toString());
 
     return ListTile(
         leading: Container(
@@ -35,20 +34,15 @@ class SongListTileReorderable extends StatelessWidget {
           )  : Icon(Icons.album_outlined),
           height: 50,
         ),
-        title: isCurrent? Text(songInfo.title,  style:  TextStyle(color: Colors.red),): Text(songInfo.title),
-        subtitle: isCurrent? Text(songInfo.artist,  style:  TextStyle(color: Colors.red),): Text(songInfo.title),
+        title: isCurrent? Text(songInfo.title,  style:  TextStyle(color: Colors.red), maxLines: 1,): Text(songInfo.title, maxLines: 1,),
+        subtitle: isCurrent? Text(songInfo.artist,  style:  TextStyle(color: Colors.red), maxLines: 1,): Text(songInfo.title, maxLines: 1,),
         trailing: ReorderableDragStartListener(
-          index: songsToPlay.indexOf(songInfo),
+          index: songsInQueue.indexOf(songInfo),
           child: const Icon(Icons.drag_handle),
         ),
         //Icon(Icons.more_vert),
-      onTap: ()  {
+      onTap: () => context.read<PlayingQueueModel>().playIndexInQueue( songInfo),
 
-          //TODO Since we are in Queue we dont need to replace current Queue
-        // just play the indexed-tapped song
-        //Also set as current
-         // player.play();
-  },
       contentPadding: EdgeInsets.symmetric(horizontal: 20),
     );
   }
