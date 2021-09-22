@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:c_music/MusicPlayer/MusicPlayer.dart';
 import 'package:c_music/MusicPlayer/MusicPlayerExpanded.dart';
 import 'package:c_music/MusicPlayer/PlayingQueueScreen.dart';
+import 'package:c_music/common/commonWidgets.dart';
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatelessWidget {
-  static MusicPlayer smallMusicPlayer = MusicPlayer();
-  static MusicPlayerExpanded expandedMusicPlayer = MusicPlayerExpanded();
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +31,12 @@ class BottomBar extends StatelessWidget {
 }
 
 
-class MyFloatingButton extends StatefulWidget{
+class MyBottomBar extends StatefulWidget{
   @override
- _MyFloatingButtonState createState()=>_MyFloatingButtonState();
-
-  BottomBar myBottomBar = BottomBar();
+ _MyBottomBarState createState()=>_MyBottomBarState();
 
 }
-class _MyFloatingButtonState extends State<MyFloatingButton>{
-  static final  player = MusicPlayer.player;
-
+class _MyBottomBarState extends State<MyBottomBar>{
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +44,60 @@ class _MyFloatingButtonState extends State<MyFloatingButton>{
       onVerticalDragUpdate:      DefaultBottomBarController.of(context).onDrag,
       onVerticalDragEnd:         DefaultBottomBarController.of(context).onDragEnd,
       //DefaultBottomBarController.of(context).onDragEnd,
-      child:  widget.myBottomBar,
+      child:  myBottomBar,
     );
   }
 }
 
 
+class BottomBarLabel extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+ return GestureDetector(
+   //
+   // Set onVerticalDrag event to drag handlers of controller for swipe effect
+   onVerticalDragUpdate: DefaultBottomBarController.of(context).onDrag,
+   onVerticalDragEnd: DefaultBottomBarController.of(context).onDragEnd,
+   child: FloatingActionButton.extended(
+     label: AnimatedBuilder(
+       animation: DefaultBottomBarController.of(context).state,
+       builder: (context, child) => Row(
+         children: [
+           Text(
+               "Queue"
+           ),
+           const SizedBox(width: 4.0),
+           AnimatedBuilder(
+             animation: DefaultBottomBarController.of(context).state,
+             builder: (context, child) => Transform(
+               alignment: Alignment.center,
+               transform: Matrix4.diagonal3Values(
+                 1,
+                 DefaultBottomBarController.of(context).state.value * 2 - 1,
+                 1,
+               ),
+               child: child,
+             ),
+             child: RotatedBox(
+               quarterTurns: 1,
+               child: Icon(
+                 Icons.chevron_right,
+                 size: 20,
+               ),
+             ),
+           ),
+         ],
+       ),
+     ),
+     elevation: 2,
+     backgroundColor: Colors.red,
+     foregroundColor: Colors.white,
+     //
+     //Set onPressed event to swap state of bottom bar
+     onPressed: () => DefaultBottomBarController.of(context).swap(),
+   ),
+ );
+
+  }
+
+}

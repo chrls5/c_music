@@ -18,8 +18,6 @@ class MusicPlayerExpanded extends StatefulWidget {
 
 class _MusicPlayerExpandedState extends State<MusicPlayerExpanded> {
 
-  static final  player = MusicPlayer.player;
-
   @override
   Widget build(BuildContext context) {
     return  PlayingQueue();

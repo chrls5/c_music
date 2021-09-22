@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:c_music/MusicPlayer/PlayingQueueModel.dart';
+import 'package:c_music/common/commonWidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
@@ -16,7 +17,6 @@ import 'package:rxdart/rxdart.dart';
 class MusicPlayer extends StatefulWidget {
   MusicPlayer( {Key? key}) : super(key: key);
 
-  static final  AudioPlayer player = AudioPlayer();
   //static final PlayingQueue myQueue = PlayingQueue();
   static  ConcatenatingAudioSource queueSource = ConcatenatingAudioSource(
     // Start loading next item just before reaching it.
@@ -32,11 +32,10 @@ class MusicPlayer extends StatefulWidget {
 
 class _MusicPlayerState extends State<MusicPlayer> {
 
-  static final  _player = MusicPlayer.player;
   @override
   void initState() {
     super.initState();
-    _player.setSpeed(1);
+    player.setSpeed(1);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.black,
     ));
@@ -52,7 +51,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
 
 
 
-    _player.playbackEventStream.listen((event) {
+    player.playbackEventStream.listen((event) {
 
       log("hi somethign went **********" + event.currentIndex.toString());
       int currInd = -1;
@@ -65,19 +64,19 @@ class _MusicPlayerState extends State<MusicPlayer> {
           print('A stream error occurred: $e');
         });
     // Try to load audio from a source and catch any errors.
-    try {
-      await _player.setAudioSource(AudioSource.uri(Uri.parse(
-          "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3")));
-    } catch (e) {
-      print("Error loading audio source: $e");
-    }
+    // try {
+    //   await player.setAudioSource(AudioSource.uri(Uri.parse(
+    //       "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3")));
+    // } catch (e) {
+    //   print("Error loading audio source: $e");
+    // }
   }
 
   @override
   void dispose() {
     // Release decoders and buffers back to the operating system making them
     // available for other apps to use.
-    _player.dispose();
+    //player.dispose();
     super.dispose();
   }
 
@@ -86,9 +85,9 @@ class _MusicPlayerState extends State<MusicPlayer> {
   /// feature of rx_dart to combine the 3 streams of interest into one.
   Stream<PositionData> get _positionDataStream =>
       Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
-          _player.positionStream,
-          _player.bufferedPositionStream,
-          _player.durationStream,
+          player.positionStream,
+          player.bufferedPositionStream,
+          player.durationStream,
               (position, bufferedPosition, duration) => PositionData(
               position, bufferedPosition, duration ?? Duration.zero));
 
@@ -99,7 +98,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Display play/pause button and volume/speed sliders.
-              ControlButtons(_player),
+              ControlButtons(player),
               // Display seek bar. Using StreamBuilder, this widget rebuilds
               // each time the position, buffered position or duration changes.
               StreamBuilder<PositionData>(
@@ -111,7 +110,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
                     position: positionData?.position ?? Duration.zero,
                     bufferedPosition:
                     positionData?.bufferedPosition ?? Duration.zero,
-                    onChangeEnd: _player.seek,
+                    onChangeEnd: player.seek,
                   );
                 },
               ),

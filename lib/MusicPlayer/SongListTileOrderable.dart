@@ -17,8 +17,7 @@ class SongListTileReorderable extends StatelessWidget {
   SongListTileReorderable(this.songInfo,this.isCurrent,  {Key? key}) : super(key: key);
 
   final FlutterAudioQuery audioQuery = FlutterAudioQuery();
-  static final  player = MusicPlayer.player;
-  
+
   
   @override
   Widget build(BuildContext context) {

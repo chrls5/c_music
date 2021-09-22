@@ -10,21 +10,22 @@ import 'package:provider/provider.dart';
 import 'MusicPlayer.dart';
 
 class SongListTile extends StatelessWidget {
-  SongListTile(this.songInfo,this.songsToPlay, {Key? key}) : super(key: key);
+  final customImage ;
+
+  SongListTile(this.songInfo,this.songsToPlay, {Key? key, this.customImage}) : super(key: key);
 
   final SongInfo songInfo;
   final List<SongInfo> songsToPlay;
 
-  static final  player = MusicPlayer.player;
 
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
         leading: Container(
-          child: songInfo.albumArtwork !=null? Image.file(
+          child: customImage==null? songInfo.albumArtwork !=null? Image.file(
             File(songInfo.albumArtwork),
-          )  : Icon(Icons.album_outlined),
+          )  : Icon(Icons.album_outlined) :customImage ,
           height: 50,
         ),
         title: Text(songInfo.title, maxLines: 1,),
