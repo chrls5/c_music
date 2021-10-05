@@ -5,9 +5,10 @@ class SelectedValueModel extends ChangeNotifier {
 
    AlbumInfo? albumSelected =null;
 
-  void setAlbumSelected(selectedVal){
+  bool setAlbumSelected(selectedVal){
     this.albumSelected = selectedVal;
     notifyListeners();
+    return true;
   }
 
 

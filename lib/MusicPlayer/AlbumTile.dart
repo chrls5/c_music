@@ -118,7 +118,11 @@ class AlbumSongs extends StatelessWidget {
         for (SongInfo x in songs) albumDuration += int.parse(x.duration);
 
 
-    return LayoutBuilder(builder: (context2, constraints)
+    return WillPopScope(
+      onWillPop:  ()async{ Provider.of<SelectedValueModel>(context, listen: false)
+        .setAlbumSelected(null); return false; },
+
+        child:LayoutBuilder(builder: (context2, constraints)
         {
           return ListView(children: [
             Row(
@@ -152,9 +156,10 @@ padding: EdgeInsets.only(left:10),
                       Icons.album_outlined,
                       size: 100,
                     ),
-                    Padding(
+                    Container(width: MediaQuery.of(context).size.width - 140,
                       padding: EdgeInsets.only(left: 10),
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,///
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(children: [
@@ -162,8 +167,8 @@ padding: EdgeInsets.only(left:10),
                                 Icons.album_outlined,
                                 size: 20,
                               ),
-                              Text(" " + albumInfo.title,
-                                  style: TextStyle(fontSize: 15)),
+                              myTextWidget( " " + albumInfo.title,TextStyle(fontSize: 15))
+
                             ]),
                             Padding(
                               padding: EdgeInsets.only(bottom: 5),
@@ -173,8 +178,8 @@ padding: EdgeInsets.only(left:10),
                                 Icons.person,
                                 size: 20,
                               ),
-                              Text(" " + albumInfo.artist,
-                                  style: TextStyle(fontSize: 15)),
+                              myTextWidget( " " + albumInfo.artist,TextStyle(fontSize: 15))
+
                             ]),
                             Padding(
                               padding: EdgeInsets.only(bottom: 5),
@@ -267,7 +272,7 @@ padding: EdgeInsets.only(left:10),
               ),
             )
           ]);
-        });
+        }));
       },
     );
   }
