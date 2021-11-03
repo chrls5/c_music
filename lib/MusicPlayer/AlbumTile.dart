@@ -1,17 +1,13 @@
-import 'package:c_music/bottomBar/BottomBar.dart';
+import 'dart:io';
+
+import 'package:c_music/MusicPlayer/SongListTile.dart';
 import 'package:c_music/common/commonWidgets.dart';
-import 'package:c_music/common/pageRouteTransitions.dart';
-import 'package:c_music/tabs/Albums.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
-import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
-import 'package:c_music/MusicPlayer/SongListTile.dart';
 
-import '../main.dart';
 import '../selectedValueModel.dart';
 import 'PlayingQueueModel.dart';
 
@@ -109,7 +105,6 @@ class AlbumSongs extends StatelessWidget {
           ));
         }
 
-        AlbumInfo x;
 
         AlbumInfo? alb = Provider.of<SelectedValueModel>(context).albumSelected;
         AlbumInfo albumInfo = alb!;

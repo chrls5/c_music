@@ -1,15 +1,10 @@
-import 'dart:developer';
-import 'dart:math';
 
 import 'package:c_music/MusicPlayer/MusicPlayer.dart';
-import 'package:c_music/MusicPlayer/SongListTileOrderable.dart';
 import 'package:c_music/common/commonWidgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:just_audio/just_audio.dart';
-
-import 'SongListTile.dart';
 
 class PlayingQueueModel extends ChangeNotifier{
 

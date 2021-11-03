@@ -3,11 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
-import 'package:just_audio/just_audio.dart';
-
-import 'MusicPlayer.dart';
-import 'PlayingQueueModel.dart';
 import 'package:provider/provider.dart';
+
+import 'PlayingQueueModel.dart';
 
 class SongListTileReorderable extends StatelessWidget {
   bool isCurrent;

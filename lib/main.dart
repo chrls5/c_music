@@ -1,23 +1,15 @@
-import 'dart:developer';
 import 'package:c_music/MusicPlayer/PlayingQueueModel.dart';
 import 'package:c_music/selectedValueModel.dart';
-import 'package:c_music/tabs/Library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
-import 'MusicPlayer/AlbumTile.dart';
-import 'bottomBar/BottomBar.dart';
-import 'common/MyTheme.dart';
 import 'common/commonWidgets.dart';
 import 'tabs/tabs.dart';
 
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 
 ThemeData _light = ThemeData.light().copyWith(
   primaryColor: Colors.green,
@@ -117,6 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
                 title: Text(currTabTitle),
+                actions: [
+                  IconButton(onPressed: ()=>{}, icon: Icon(Icons.sync))
+                ],
                 bottom: const TabBar(
                   tabs: tabs,
                 ),

@@ -1,8 +1,4 @@
-import 'dart:developer';
 
-import 'package:c_music/MusicPlayer/MusicPlayer.dart';
-import 'package:c_music/MusicPlayer/MusicPlayerExpanded.dart';
-import 'package:c_music/MusicPlayer/PlayingQueueScreen.dart';
 import 'package:c_music/common/commonWidgets.dart';
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/material.dart';

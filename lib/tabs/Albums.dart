@@ -1,19 +1,15 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:c_music/MusicPlayer/AlbumTile.dart';
 import 'package:c_music/common/commonWidgets.dart';
-import 'package:provider/src/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:c_music/MusicPlayer/MusicPlayer.dart';
-import 'package:c_music/MusicPlayer/SongListTile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
-import 'package:c_music/MusicPlayer/AlbumTile.dart';
+import 'package:provider/src/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../selectedValueModel.dart';
-import 'Library.dart';
 
 class Albums extends StatefulWidget {
   const Albums({Key? key}) : super(key: key);

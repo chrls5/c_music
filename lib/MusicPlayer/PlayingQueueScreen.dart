@@ -2,18 +2,13 @@
 
 import 'dart:developer';
 
-import 'package:c_music/MusicPlayer/MusicPlayer.dart';
 import 'package:c_music/MusicPlayer/PlayingQueueModel.dart';
 import 'package:c_music/MusicPlayer/SongListTileOrderable.dart';
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
-import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:provider/provider.dart';
 
-import 'SongListTile.dart';
 
 class PlayingQueue extends StatefulWidget   {
 
