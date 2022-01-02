@@ -1,5 +1,6 @@
 import 'package:c_music/MusicPlayer/PlayingQueueModel.dart';
 import 'package:c_music/selectedValueModel.dart';
+import 'package:c_music/sync/runSync.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
               create: (context) => PlayingQueueModel()),
           ChangeNotifierProvider<SelectedValueModel>(
               create: (context) => SelectedValueModel()),
+
 
         ],
         child: MaterialApp(
@@ -110,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
               appBar: AppBar(
                 title: Text(currTabTitle),
                 actions: [
-                  IconButton(onPressed: ()=>{}, icon: Icon(Icons.sync))
+                  IconButton(onPressed: ()=>{showMyDialog(context)}, icon: Icon(Icons.sync))
                 ],
                 bottom: const TabBar(
                   tabs: tabs,

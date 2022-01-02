@@ -2,14 +2,16 @@
     package="com.example.c_music">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACTION_MANAGE_WRITE_SETTINGS" />
    <application
-       android:requestLegacyExternalStorage="true"
         android:label="c_music"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:requestLegacyExternalStorage="true"
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
@@ -43,5 +45,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-    </application>
+       android:requestLegacyExternalStorage="true"
+   </application>
 </manifest>

@@ -24,6 +24,7 @@ class SongListTile extends StatelessWidget {
             File(songInfo.albumArtwork),
           )  : Icon(Icons.album_outlined) :customImage ,
           height: 50,
+          width: 50,
         ),
         title: Text(songInfo.title, maxLines: 1,),
         subtitle: Text(songInfo.artist, maxLines: 1,),
