@@ -2,11 +2,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:c_music/sync/runSync.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:ext_storage/ext_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:on_audio_edit/on_audio_edit.dart';
 import 'Song.dart';
+import 'package:http/http.dart' as http;
 
 class Playlist {
   String title;
@@ -26,29 +28,12 @@ class Playlist {
     return '{ ${this.title}, ${this.id},  ${this.thumnUrl} }';
   }
 
-
-  Future<String> _getPathToDownload() async {
-
-    var status = await Permission.storage.status;
-    Permission.manageExternalStorage.request();
-  if (!status.isGranted) {
-    await Permission.storage.request();
-  }
-
-    return ExtStorage.getExternalStoragePublicDirectory(
-        ExtStorage.DIRECTORY_MUSIC);
-  }
-
-
-  Future<void> syncAndDownload(setState) async {
+  Future<void> syncAndDownload(setState, String base_path) async {
     List<Song> songs;
 
-
-    final String base_path = await _getPathToDownload();
     log(base_path);
 
     var yt = YoutubeExplode();
-
 
 // Get playlist metadata.
     var playlist = await yt.playlists.get(this.id);
@@ -67,48 +52,55 @@ class Playlist {
 
     totalSongs = playlistVideos.length;
     for (var song in playlistVideos) {
+      setState(() {
+        currentSong = song.title;
+        currSong = ++count;
+        currProcc=0;
+      });
+      log("Started downloading proc");
+
+
       // Get the video manifest.
       var manifest = await yt.videos.streamsClient.getManifest(song.id);
-    //  var streams = manifest.videoOnly;
-      var streamInfo = manifest.audioOnly.first;
+      //  var streams = manifest.videoOnly;
+      var streamInfo = manifest.audioOnly.withHighestBitrate();
 
-
-      setState((){
-        currSong = ++count;
-
+      setState(() {
+        currProcc+=25;
       });
-      log("syncing: " + (count).toString() + "/" + playlistVideos.length.toString());
 
       if (streamInfo != null) {
         // Get the actual stream
         var stream = yt.videos.streamsClient.get(streamInfo);
 
-        String path = base_path+ "/cmusic_test/"+ this.title;
-        String name =  song.author+"-"+song.title+".mp3";
+        String path = base_path + "/" + this.title;
+        String name = song.author + "-" + song.title +    ".m4a"; //streamInfo.container.name.toString();
         String full_path = path + "/" + name;
         log(full_path);
+        setState(() {
+          currProcc+=25;
+        });
         // Open a file for writing.
         var exists = await File(full_path).exists();
-        if(exists)
-          continue;
+        if (exists) continue;
 
-      //  var file = await new File(path).create(recursive: true);
+        //  var file = await new File(path).create(recursive: true);
 
-        new Directory(path)
-            .createSync(recursive: true);
+        new Directory(path).createSync(recursive: true);
 
-       File file =  await new File(full_path).create(recursive: true);
-
-
+        File file = await new File(full_path).create(recursive: true);
+        setState(() {
+          currProcc+=25;
+        });
         var fileStream = file.openWrite();
 
-          log(song.toString());
-
-
+        log(song.toString());
 
         // Pipe all the content of the stream into the file.
         await stream.pipe(fileStream);
-
+        setState(() {
+          currProcc+=25;
+        });
         // Close the file.
         await fileStream.flush();
         await fileStream.close();
@@ -118,11 +110,15 @@ class Playlist {
         //   TagType.TITLE: song.title,
         //   TagType.ARTIST: song.author
         // };
+        //
+        // AudioModel songg = await _audioEdit.readAudio(path);
+        // print("TITITLE   ${songg.title}");
         // bool songf = await _audioEdit.editAudio(path, tags);
         // print(songf); //True or False
 
       }
 
+      log("Ended downloading proc");
 
     }
   }
