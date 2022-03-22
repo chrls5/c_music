@@ -105,16 +105,17 @@ class Playlist {
         await fileStream.flush();
         await fileStream.close();
 
-        //
-        // Map<TagType, dynamic> tags = {
-        //   TagType.TITLE: song.title,
-        //   TagType.ARTIST: song.author
-        // };
-        //
-        // AudioModel songg = await _audioEdit.readAudio(path);
-        // print("TITITLE   ${songg.title}");
-        // bool songf = await _audioEdit.editAudio(path, tags);
-        // print(songf); //True or False
+
+        Map<TagType, dynamic> tags = {
+          TagType.COMMENT : "something"
+        };
+
+        AudioModel songg = await _audioEdit.readAudio(path);
+        print("TITITLE   ${songg.title}");
+        bool songf = await _audioEdit.editAudio(path, tags);
+        print(songf); //True or False
+        AudioModel songgg = await _audioEdit.readAudio(path);
+        print("TITITLE   ${songgg.comment}");
 
       }
 
